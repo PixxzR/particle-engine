@@ -179,12 +179,51 @@ program
 
 program
   .command('custom <code>')
-  .description('Execute custom particle code')
+  .description('Execute custom particle code (inline)')
   .action(async (code) => {
     const msg = { type: 'custom', code };
     try {
       const res = await send(msg);
       console.log('✓ Custom code applied', res.message || '');
+    } catch (e) {
+      console.error(`✗ Error: ${e.message}`);
+    }
+  });
+
+program
+  .command('custom-file <file>')
+  .description('Execute custom particle code from a .js file')
+  .action(async (file) => {
+    try {
+      const code = readFileSync(file, 'utf-8');
+      const msg = { type: 'custom', code };
+      const res = await send(msg);
+      console.log(`✓ Custom code loaded from ${file}`, res.message || '');
+    } catch (e) {
+      console.error(`✗ Error: ${e.message}`);
+    }
+  });
+
+program
+  .command('points <file>')
+  .description('Send pre-computed point positions from a JSON file')
+  .option('--transition <seconds>', 'Transition duration', '2')
+  .option('--easing <type>', 'Easing function', 'easeInOut')
+  .option('--mode <type>', 'Transition mode', 'direct')
+  .action(async (file, opts) => {
+    try {
+      const data = JSON.parse(readFileSync(file, 'utf-8'));
+      const positions = data.positions || data;
+      const msg = {
+        type: 'points',
+        positions,
+        colors: data.colors || null,
+        transition: parseFloat(opts.transition),
+        easing: opts.easing,
+        transitionMode: opts.mode,
+      };
+      const res = await send(msg);
+      console.log(`✓ Points: ${positions.length} positions loaded`, res.message || '');
     } catch (e) {
       console.error(`✗ Error: ${e.message}`);
     }

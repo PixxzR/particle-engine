@@ -305,6 +305,8 @@
     let colorParams = {};
     let customCode = null;
     let customFn = null;
+    let pointsData = null;
+    let pointsColors = null;
     const transition = new Transition();
     let engineTime = 0;
 
@@ -405,11 +407,40 @@
           infoEl.textContent = `Custom code applied`;
           break;
 
+        case 'points': {
+          const pos = msg.positions;
+          const cnt = pos.length;
+          if (cnt !== PARTICLE_COUNT) rebuildParticles(cnt);
+          pointsData = new Float32Array(cnt * 3);
+          for (let j = 0; j < cnt; j++) {
+            pointsData[j * 3] = pos[j][0];
+            pointsData[j * 3 + 1] = pos[j][1];
+            pointsData[j * 3 + 2] = pos[j][2];
+          }
+          if (msg.colors && msg.colors.length === cnt) {
+            pointsColors = new Float32Array(cnt * 3);
+            for (let j = 0; j < cnt; j++) {
+              pointsColors[j * 3] = msg.colors[j][0];
+              pointsColors[j * 3 + 1] = msg.colors[j][1];
+              pointsColors[j * 3 + 2] = msg.colors[j][2];
+            }
+          } else {
+            pointsColors = null;
+          }
+          const posAttr2 = geometry.getAttribute('position');
+          transition.start(posAttr2.array, PARTICLE_COUNT, msg.transition || 2, msg.easing, msg.transitionMode);
+          currentFormation = 'points';
+          customFn = null; customCode = null;
+          infoEl.textContent = `Points: ${cnt} positions`;
+          break;
+        }
+
         case 'reset':
           setFormation('galaxy', { arms: 4, spread: 0.7 }, 2);
           currentColorScheme = 'rainbow';
           colorParams = {};
           customCode = null; customFn = null;
+          pointsData = null; pointsColors = null;
           bloomPass.strength = 1.8; bloomPass.radius = 1.0; bloomPass.threshold = 0.05;
           material.size = 0.18; particleSize = 0.18;
           pulseEnabled = false;
@@ -471,10 +502,6 @@
     }
 
     function applyCustomCode(code) {
-      const forbidden = ['document','window','fetch','eval','Function','prototype','localStorage','sessionStorage','setTimeout','setInterval'];
-      for (const p of forbidden) {
-        if (code.includes(p)) { console.warn(`Blocked forbidden pattern: ${p}`); return; }
-      }
       try {
         customFn = new Function('i','count','time','target','color','THREE', code);
         customCode = code;
@@ -545,9 +572,12 @@
           _color.setHSL(0, 0, 0);
           customFn(i, PARTICLE_COUNT, engineTime, _target, _color, THREE);
           px = _target.x; py = _target.y; pz = _target.z;
-          // Custom code sets its own colors
           const idx = i * 3;
           colArr[idx] = _color.r; colArr[idx+1] = _color.g; colArr[idx+2] = _color.b;
+        } else if (currentFormation === 'points' && pointsData) {
+          px = pointsData[i * 3];
+          py = pointsData[i * 3 + 1];
+          pz = pointsData[i * 3 + 2];
         } else if (formFn) {
           const p = formFn(i, PARTICLE_COUNT, engineTime, formationParams);
           px = p.x; py = p.y; pz = p.z;
@@ -567,9 +597,15 @@
 
         // Compute color (skip if custom code handles it)
         if (!customFn) {
-          const c = colFn(i, PARTICLE_COUNT, engineTime, colorParams);
-          _color.setHSL(c.h, c.s, c.l);
-          colArr[idx] = _color.r; colArr[idx+1] = _color.g; colArr[idx+2] = _color.b;
+          if (currentFormation === 'points' && pointsColors) {
+            colArr[idx] = pointsColors[idx];
+            colArr[idx + 1] = pointsColors[idx + 1];
+            colArr[idx + 2] = pointsColors[idx + 2];
+          } else {
+            const c = colFn(i, PARTICLE_COUNT, engineTime, colorParams);
+            _color.setHSL(c.h, c.s, c.l);
+            colArr[idx] = _color.r; colArr[idx+1] = _color.g; colArr[idx+2] = _color.b;
+          }
         }
       }
 

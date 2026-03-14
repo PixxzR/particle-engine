@@ -64,6 +64,9 @@ function updateState(msg) {
       Object.assign(engineState.config, msg);
       delete engineState.config.type;
       break;
+    case 'points':
+      engineState.formation = { name: 'points', params: {} };
+      break;
     case 'reset':
       engineState.formation = { name: 'galaxy', params: { arms: 4, spread: 0.7 } };
       engineState.color = { scheme: 'rainbow', params: {} };

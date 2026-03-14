@@ -13,6 +13,7 @@ export const MessageTypes = {
   SNAPSHOT: 'snapshot',
   RESET: 'reset',
   STATE: 'state',
+  POINTS: 'points',
   SEQUENCE: 'sequence',
   ACK: 'ack',
   ERROR: 'error',
@@ -69,6 +70,11 @@ export function validate(msg) {
 
     case MessageTypes.SEQUENCE:
       if (!Array.isArray(msg.steps)) return { valid: false, error: 'Sequence needs steps array' };
+      return { valid: true };
+
+    case MessageTypes.POINTS:
+      if (!Array.isArray(msg.positions)) return { valid: false, error: 'Points needs a positions array' };
+      if (msg.positions.length === 0) return { valid: false, error: 'Positions array is empty' };
       return { valid: true };
 
     case MessageTypes.SNAPSHOT:
