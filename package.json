@@ -1,0 +1,15 @@
+{
+  "name": "particle-engine",
+  "version": "1.0.0",
+  "description": "AI-controllable 3D particle system engine via WebSocket/CLI",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "cli": "node cli/controller.js"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "express": "^4.21.0",
+    "ws": "^8.18.0"
+  }
+}

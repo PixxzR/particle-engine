@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Particle Engine</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; font-family: monospace; }
+    canvas { display: block; }
+    #stats { position: fixed; top: 10px; left: 10px; color: #0f0; font-size: 13px; z-index: 10; opacity: 0.7; }
+    #info { position: fixed; bottom: 10px; left: 10px; color: rgba(255,255,255,0.5); font-size: 12px; z-index: 10; }
+    #connection { position: fixed; top: 10px; right: 10px; padding: 4px 10px; border-radius: 20px; font-size: 11px; z-index: 10; }
+    .connected { background: #22c55e33; color: #22c55e; border: 1px solid #22c55e55; }
+    .disconnected { background: #ef444433; color: #ef4444; border: 1px solid #ef444455; }
+  </style>
+</head>
+<body>
+  <div id="stats"></div>
+  <div id="info">Particle Engine v1.0 — Waiting for commands...</div>
+  <div id="connection" class="disconnected">Disconnected</div>
+
+  <!-- Three.js r160 -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    // ═══════════════════════════════════════════
+    //  FORMATIONS (client-side copy, no imports)
+    // ═══════════════════════════════════════════
+    const TAU = Math.PI * 2;
+    const PHI = (1 + Math.sqrt(5)) / 2;
+
+    const formations = {
+      sphere(i, count, time, p = {}) {
+        const radius = p.radius || 40;
+        const y = 1 - (i / (count - 1)) * 2;
+        const rY = Math.sqrt(1 - y * y);
+        const theta = i * TAU / PHI;
+        const b = 1 + Math.sin(time * 0.5) * 0.03;
+        return { x: Math.cos(theta) * rY * radius * b, y: y * radius * b, z: Math.sin(theta) * rY * radius * b };
+      },
+      cube(i, count, time, p = {}) {
+        const s = p.size || 40, h = s / 2;
+        const pf = Math.floor(count / 6), face = Math.min(Math.floor(i / pf), 5);
+        const fi = i % pf, side = Math.ceil(Math.sqrt(pf));
+        const row = Math.floor(fi / side), col = fi % side;
+        const u = (col / (side - 1)) * s - h, v = (row / (side - 1)) * s - h;
+        const w = Math.sin(time * 0.8 + i * 0.001) * 0.5;
+        if (face === 0) return { x: u + w, y: v, z: h };
+        if (face === 1) return { x: u + w, y: v, z: -h };
+        if (face === 2) return { x: h, y: u, z: v + w };
+        if (face === 3) return { x: -h, y: u, z: v + w };
+        if (face === 4) return { x: u, y: h, z: v + w };
+        return { x: u, y: -h, z: v + w };
+      },
+      helix(i, count, time, p = {}) {
+        const radius = p.radius || 25, height = p.height || 80, turns = p.turns || 6;
+        const strand = i < count / 2 ? 0 : 1;
+        const si = strand === 0 ? i : i - Math.floor(count / 2);
+        const sc = Math.floor(count / 2), t = si / sc;
+        const angle = t * turns * TAU + time * 0.5 + strand * Math.PI;
+        return { x: Math.cos(angle) * radius, y: (t - 0.5) * height, z: Math.sin(angle) * radius };
+      },
+      torus(i, count, time, p = {}) {
+        const R = p.majorRadius || 35, r = p.minorRadius || 12;
+        const rc = Math.ceil(Math.sqrt(count));
+        const ring = Math.floor(i / rc), pos = i % rc;
+        const u = (ring / rc) * TAU + time * 0.3, v = (pos / rc) * TAU;
+        return { x: (R + r * Math.cos(v)) * Math.cos(u), y: r * Math.sin(v), z: (R + r * Math.cos(v)) * Math.sin(u) };
+      },
+      wave(i, count, time, p = {}) {
+        const amp = p.amplitude || 15, freq = p.frequency || 0.15;
+        const side = Math.ceil(Math.sqrt(count));
+        const row = Math.floor(i / side), col = i % side;
+        const x = (col - side / 2) * 1.2, z = (row - side / 2) * 1.2;
+        const d = Math.sqrt(x * x + z * z);
+        return { x, y: Math.sin(d * freq - time * 2) * amp, z };
+      },
+      galaxy(i, count, time, p = {}) {
+        const arms = p.arms || 4, spread = p.spread || 0.6, rot = p.rotation || 1;
+        const t = i / count, arm = i % arms;
+        const armA = (arm / arms) * TAU, dist = Math.pow(t, 0.5) * 50;
+        const angle = armA + dist * 0.08 * rot + time * 0.2;
+        const sc = (1 - t * 0.7) * spread;
+        const px = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+        const py = Math.sin(i * 269.5 + 183.3) * 43758.5453;
+        const rx = (px - Math.floor(px) - 0.5) * sc * dist * 0.3;
+        const ry = (py - Math.floor(py) - 0.5) * sc * 8;
+        return { x: Math.cos(angle) * dist + rx, y: ry, z: Math.sin(angle) * dist + rx * 0.3 };
+      },
+      tornado(i, count, time, p = {}) {
+        const height = p.height || 80, radius = p.radius || 30, spin = p.spin || 3;
+        const t = i / count, y = (t - 0.5) * height;
+        const r = radius * (0.1 + t * 0.9) * (1 + Math.sin(t * 10 + time) * 0.05);
+        const angle = t * spin * TAU + time * 2;
+        return { x: Math.cos(angle) * r, y, z: Math.sin(angle) * r };
+      },
+      grid(i, count, time, p = {}) {
+        const sp = p.spacing || 3, side = Math.ceil(Math.cbrt(count));
+        const layer = Math.floor(i / (side * side)), rem = i % (side * side);
+        const row = Math.floor(rem / side), col = rem % side;
+        const off = (side - 1) * sp / 2;
+        const b = Math.sin(time * 0.5 + (col + row + layer) * 0.2) * 0.5;
+        return { x: col * sp - off + b, y: row * sp - off + b, z: layer * sp - off };
+      },
+      explosion(i, count, time, p = {}) {
+        const force = p.force || 1;
+        const y = 1 - (i / (count - 1)) * 2, rY = Math.sqrt(1 - y * y);
+        const theta = i * TAU / PHI;
+        const dx = Math.cos(theta) * rY, dy = y, dz = Math.sin(theta) * rY;
+        const spd = (0.5 + (Math.sin(i * 127.1) * 43758.5453 % 1) * 0.5) * force;
+        const t = time * 20 * spd;
+        return { x: dx * t, y: dy * t, z: dz * t };
+      },
+      heart(i, count, time, p = {}) {
+        const scale = p.scale || 2.5;
+        const t = (i / count) * TAU;
+        const u = Math.floor(i / Math.ceil(Math.sqrt(count))) / Math.ceil(Math.sqrt(count)) * Math.PI;
+        const sinT = Math.sin(t), cosT = Math.cos(t);
+        const sinU = Math.sin(u), cosU = Math.cos(u);
+        const b = 1 + Math.sin(time * 1.5) * 0.05;
+        return {
+          x: scale * (16 * sinT * sinT * sinT) * sinU * b,
+          y: scale * (13 * cosT - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * b,
+          z: scale * (16 * sinT * sinT * sinT) * cosU * b * 0.5,
+        };
+      },
+      random(i, count, time, p = {}) {
+        const range = p.range || 60;
+        const px = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+        const py = Math.sin(i * 269.5 + 183.3) * 43758.5453;
+        const pz = Math.sin(i * 419.2 + 371.9) * 43758.5453;
+        return { x: (px - Math.floor(px) - 0.5) * range, y: (py - Math.floor(py) - 0.5) * range, z: (pz - Math.floor(pz) - 0.5) * range };
+      },
+    };
+
+    // ═══════════════════════════════════════════
+    //  COLOR SCHEMES
+    // ═══════════════════════════════════════════
+    const colorSchemes = {
+      rainbow(i, count, time) { return { h: (i / count + time * 0.05) % 1, s: 0.9, l: 0.55 }; },
+      fire(i, count, time) {
+        const t = i / count, f = Math.sin(i * 13.7 + time * 3) * 0.05;
+        return { h: 0.02 + t * 0.08 + f, s: 1.0, l: 0.4 + t * 0.2 };
+      },
+      ice(i, count, time) {
+        const t = i / count, s = Math.sin(i * 7.3 + time * 2) * 0.03;
+        return { h: 0.55 + t * 0.08 + s, s: 0.7 + t * 0.3, l: 0.5 + t * 0.2 };
+      },
+      ocean(i, count, time) {
+        const t = i / count, w = Math.sin(i * 0.05 + time * 1.5) * 0.04;
+        return { h: 0.5 + t * 0.12 + w, s: 0.8, l: 0.35 + t * 0.25 };
+      },
+      neon(i, count, time) {
+        const c = (i / count * 3 + time * 0.3) % 1;
+        let h; if (c < 0.33) h = 0.83; else if (c < 0.66) h = 0.33; else h = 0.55;
+        return { h, s: 1.0, l: 0.55 };
+      },
+      monochrome(i, count, time, p = {}) {
+        return { h: p.hue || 0.75, s: 0.6 + Math.sin(i * 0.01 + time) * 0.2, l: 0.3 + (i / count) * 0.4 };
+      },
+      sunset(i, count, time) {
+        const t = i / count, sh = Math.sin(time * 0.3) * 0.02;
+        return { h: 0.05 + t * 0.75 * 0.15 + sh, s: 0.9, l: 0.5 + Math.sin(i * 0.02 + time) * 0.1 };
+      },
+      matrix(i, count, time) {
+        const f = Math.sin(i * 73.1 + time * 5) > 0.8 ? 0.7 : 0.5;
+        return { h: 0.33, s: 1.0, l: f };
+      },
+      custom(i, count, time, p = {}) {
+        const h1 = p.hueStart || 0, h2 = p.hueEnd || 1, t = i / count;
+        return { h: (h1 + (h2 - h1) * t + time * (p.speed || 0.05)) % 1, s: p.saturation || 0.9, l: p.lightness || 0.55 };
+      },
+    };
+
+    // ═══════════════════════════════════════════
+    //  TRANSITION SYSTEM
+    // ═══════════════════════════════════════════
+    const easings = {
+      linear: t => t,
+      easeInOut: t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2,
+      easeOut: t => 1 - Math.pow(1-t,3),
+      easeIn: t => t*t*t,
+      elastic: t => { if(t===0||t===1)return t; return -Math.pow(2,10*t-10)*Math.sin((t*10-10.75)*TAU/3); },
+      bounce: t => { t=1-t; if(t<1/2.75)return 1-7.5625*t*t; if(t<2/2.75)return 1-(7.5625*(t-=1.5/2.75)*t+.75); if(t<2.5/2.75)return 1-(7.5625*(t-=2.25/2.75)*t+.9375); return 1-(7.5625*(t-=2.625/2.75)*t+.984375); },
+    };
+
+    class Transition {
+      constructor() {
+        this.active = false; this.startTime = 0; this.duration = 2;
+        this.easing = 'easeInOut'; this.mode = 'direct';
+        this.source = null; this.count = 0;
+      }
+      start(positions, count, duration, easing, mode) {
+        if (!this.source || this.count !== count) this.source = new Float32Array(count * 3);
+        this.source.set(positions); this.count = count;
+        this.duration = duration || 2; this.easing = easing || 'easeInOut';
+        this.mode = mode || 'direct'; this.startTime = -1; this.active = true;
+      }
+      getT(time, i, count) {
+        if (!this.active) return 1;
+        if (this.startTime < 0) this.startTime = time;
+        let elapsed = time - this.startTime;
+        let raw = Math.min(elapsed / this.duration, 1);
+        if (this.mode === 'wave') {
+          const delay = (i / count) * (this.duration * 0.4);
+          raw = Math.min(Math.max((elapsed - delay) / (this.duration * 0.6), 0), 1);
+        }
+        const fn = easings[this.easing] || easings.easeInOut;
+        if (raw >= 1 && i >= count - 1) this.active = false;
+        return fn(raw);
+      }
+      lerp(i, tx, ty, tz, t) {
+        const si = i * 3;
+        const sx = this.source[si], sy = this.source[si+1], sz = this.source[si+2];
+        if (this.mode === 'chaos' && t > 0 && t < 1) {
+          const ct = t < 0.5 ? t * 2 : (t - 0.5) * 2;
+          const cs = 60;
+          const cx = Math.sin(i*127.1+311.7)*cs, cy = Math.sin(i*269.5+183.3)*cs, cz = Math.sin(i*419.2+371.9)*cs;
+          if (t < 0.5) return { x: sx+(cx-sx)*ct, y: sy+(cy-sy)*ct, z: sz+(cz-sz)*ct };
+          return { x: cx+(tx-cx)*ct, y: cy+(ty-cy)*ct, z: cz+(tz-cz)*ct };
+        }
+        return { x: sx+(tx-sx)*t, y: sy+(ty-sy)*t, z: sz+(tz-sz)*t };
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    //  SCENE SETUP
+    // ═══════════════════════════════════════════
+    const W = window.innerWidth, H = window.innerHeight;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 500);
+    camera.position.set(0, 20, 80);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    document.body.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.6;
+
+    // Post-processing
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(W, H), 1.8, 1.0, 0.05);
+    composer.addPass(bloomPass);
+
+    // ═══════════════════════════════════════════
+    //  PARTICLE SYSTEM
+    // ═══════════════════════════════════════════
+    let PARTICLE_COUNT = 20000;
+    let particleSize = 0.18;
+
+    // Buffers
+    let positions = new Float32Array(PARTICLE_COUNT * 3);
+    let colors = new Float32Array(PARTICLE_COUNT * 3);
+
+    // Initialize galaxy positions
+    const _initParams = { arms: 4, spread: 0.7 };
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const p = formations.galaxy(i, PARTICLE_COUNT, 0, _initParams);
+      positions[i*3] = p.x; positions[i*3+1] = p.y; positions[i*3+2] = p.z;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: particleSize,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      sizeAttenuation: true,
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    // ═══════════════════════════════════════════
+    //  ENGINE STATE
+    // ═══════════════════════════════════════════
+    let currentFormation = 'galaxy';
+    let formationParams = { arms: 4, spread: 0.7 };
+    let currentColorScheme = 'rainbow';
+    let colorParams = {};
+    let customCode = null;
+    let customFn = null;
+    const transition = new Transition();
+    let engineTime = 0;
+
+    // Pre-allocated objects for the hot loop
+    const _target = new THREE.Vector3();
+    const _color = new THREE.Color();
+
+    // Pulse effect state
+    let pulseEnabled = false;
+    let pulseSpeed = 2.0;
+    let pulseMin = 0.08;
+    let pulseMax = 0.25;
+
+    // ═══════════════════════════════════════════
+    //  WEBSOCKET CONNECTION
+    // ═══════════════════════════════════════════
+    const connEl = document.getElementById('connection');
+    const infoEl = document.getElementById('info');
+    let ws = null;
+
+    function connectWS() {
+      const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+      ws = new WebSocket(`${proto}://${location.host}/renderer`);
+
+      ws.onopen = () => {
+        connEl.textContent = 'Connected';
+        connEl.className = 'connected';
+      };
+
+      ws.onclose = () => {
+        connEl.textContent = 'Disconnected';
+        connEl.className = 'disconnected';
+        setTimeout(connectWS, 2000);
+      };
+
+      ws.onerror = () => ws.close();
+
+      ws.onmessage = (ev) => {
+        const msg = JSON.parse(ev.data);
+        handleCommand(msg);
+      };
+    }
+
+    function handleCommand(msg) {
+      switch (msg.type) {
+        case 'init':
+          if (msg.state) {
+            if (msg.state.formation) {
+              setFormation(msg.state.formation.name, msg.state.formation.params, 1);
+            }
+            if (msg.state.color) {
+              currentColorScheme = msg.state.color.scheme;
+              colorParams = msg.state.color.params || {};
+            }
+            if (msg.state.effects?.bloom) {
+              const b = msg.state.effects.bloom;
+              bloomPass.strength = b.strength ?? 1.2;
+              bloomPass.radius = b.radius ?? 0.8;
+              bloomPass.threshold = b.threshold ?? 0.1;
+            }
+          }
+          break;
+
+        case 'formation':
+          setFormation(msg.name, msg.params || {}, msg.transition || 2, msg.easing, msg.transitionMode);
+          infoEl.textContent = `Formation: ${msg.name}`;
+          break;
+
+        case 'color':
+          currentColorScheme = msg.scheme;
+          colorParams = msg.params || {};
+          infoEl.textContent = `Color: ${msg.scheme}`;
+          break;
+
+        case 'effect':
+          applyEffect(msg.name, msg.params || {});
+          infoEl.textContent = `Effect: ${msg.name}`;
+          break;
+
+        case 'camera':
+          applyCamera(msg.action, msg.params || {});
+          infoEl.textContent = `Camera: ${msg.action}`;
+          break;
+
+        case 'config':
+          if (msg.particleCount && msg.particleCount !== PARTICLE_COUNT) {
+            rebuildParticles(msg.particleCount);
+          }
+          if (msg.particleSize) {
+            particleSize = msg.particleSize;
+            material.size = particleSize;
+          }
+          infoEl.textContent = `Config updated`;
+          break;
+
+        case 'custom':
+          applyCustomCode(msg.code);
+          infoEl.textContent = `Custom code applied`;
+          break;
+
+        case 'reset':
+          setFormation('galaxy', { arms: 4, spread: 0.7 }, 2);
+          currentColorScheme = 'rainbow';
+          colorParams = {};
+          customCode = null; customFn = null;
+          bloomPass.strength = 1.8; bloomPass.radius = 1.0; bloomPass.threshold = 0.05;
+          material.size = 0.18; particleSize = 0.18;
+          pulseEnabled = false;
+          controls.autoRotateSpeed = 0.6;
+          infoEl.textContent = 'Engine reset';
+          break;
+      }
+    }
+
+    function setFormation(name, params, duration, easing, mode) {
+      if (formations[name] || name === 'custom') {
+        // Capture current state for transition
+        const posAttr = geometry.getAttribute('position');
+        transition.start(posAttr.array, PARTICLE_COUNT, duration, easing, mode);
+        currentFormation = name;
+        formationParams = params || {};
+      }
+    }
+
+    function applyEffect(name, params) {
+      switch (name) {
+        case 'bloom':
+          if (params.enabled === false) { bloomPass.strength = 0; return; }
+          bloomPass.strength = params.strength ?? bloomPass.strength;
+          bloomPass.radius = params.radius ?? bloomPass.radius;
+          bloomPass.threshold = params.threshold ?? bloomPass.threshold;
+          break;
+        case 'pulse':
+          pulseEnabled = params.enabled !== false;
+          pulseSpeed = params.speed ?? 2.0;
+          pulseMin = params.minSize ?? 0.08;
+          pulseMax = params.maxSize ?? 0.25;
+          break;
+      }
+    }
+
+    function applyCamera(action, params) {
+      switch (action) {
+        case 'orbit':
+          controls.autoRotate = true;
+          controls.autoRotateSpeed = params.speed ?? 0.5;
+          break;
+        case 'zoom':
+          const dist = params.distance ?? 80;
+          camera.position.normalize().multiplyScalar(dist);
+          break;
+        case 'position':
+          camera.position.set(params.x ?? 0, params.y ?? 20, params.z ?? 80);
+          break;
+        case 'lookAt':
+          controls.target.set(params.x ?? 0, params.y ?? 0, params.z ?? 0);
+          break;
+        case 'reset':
+          camera.position.set(0, 20, 80);
+          controls.target.set(0, 0, 0);
+          controls.autoRotateSpeed = 0.4;
+          break;
+      }
+    }
+
+    function applyCustomCode(code) {
+      const forbidden = ['document','window','fetch','eval','Function','prototype','localStorage','sessionStorage','setTimeout','setInterval'];
+      for (const p of forbidden) {
+        if (code.includes(p)) { console.warn(`Blocked forbidden pattern: ${p}`); return; }
+      }
+      try {
+        customFn = new Function('i','count','time','target','color','THREE', code);
+        customCode = code;
+        const posAttr = geometry.getAttribute('position');
+        transition.start(posAttr.array, PARTICLE_COUNT, 2, 'easeInOut', 'direct');
+        currentFormation = 'custom';
+      } catch (e) {
+        console.error('Custom code error:', e);
+        customFn = null;
+      }
+    }
+
+    function rebuildParticles(newCount) {
+      PARTICLE_COUNT = Math.min(Math.max(newCount, 100), 50000);
+      positions = new Float32Array(PARTICLE_COUNT * 3);
+      colors = new Float32Array(PARTICLE_COUNT * 3);
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const p = formations.random(i, PARTICLE_COUNT, 0);
+        positions[i*3] = p.x; positions[i*3+1] = p.y; positions[i*3+2] = p.z;
+      }
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      geometry.setDrawRange(0, PARTICLE_COUNT);
+    }
+
+    // ═══════════════════════════════════════════
+    //  RENDER LOOP — ZERO ALLOCATIONS
+    // ═══════════════════════════════════════════
+    const statsEl = document.getElementById('stats');
+    let frameCount = 0, lastFpsTime = 0, fps = 0;
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      engineTime += delta;
+
+      // FPS counter
+      frameCount++;
+      if (engineTime - lastFpsTime >= 1) {
+        fps = frameCount;
+        frameCount = 0;
+        lastFpsTime = engineTime;
+        statsEl.textContent = `${fps} FPS | ${PARTICLE_COUNT} particles | ${currentFormation}`;
+      }
+
+      // Pulse effect
+      if (pulseEnabled) {
+        material.size = pulseMin + (pulseMax - pulseMin) * (0.5 + 0.5 * Math.sin(engineTime * pulseSpeed));
+      }
+
+      const posAttr = geometry.getAttribute('position');
+      const colAttr = geometry.getAttribute('color');
+      const posArr = posAttr.array;
+      const colArr = colAttr.array;
+
+      // Get formation and color functions
+      const formFn = currentFormation === 'custom' ? null : formations[currentFormation];
+      const colFn = colorSchemes[currentColorScheme] || colorSchemes.rainbow;
+      const isTransitioning = transition.active;
+
+      // HOT LOOP — runs PARTICLE_COUNT times per frame
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        // Compute target position
+        let px, py, pz;
+        if (customFn) {
+          _target.set(0, 0, 0);
+          _color.setHSL(0, 0, 0);
+          customFn(i, PARTICLE_COUNT, engineTime, _target, _color, THREE);
+          px = _target.x; py = _target.y; pz = _target.z;
+          // Custom code sets its own colors
+          const idx = i * 3;
+          colArr[idx] = _color.r; colArr[idx+1] = _color.g; colArr[idx+2] = _color.b;
+        } else if (formFn) {
+          const p = formFn(i, PARTICLE_COUNT, engineTime, formationParams);
+          px = p.x; py = p.y; pz = p.z;
+        } else {
+          px = 0; py = 0; pz = 0;
+        }
+
+        // Apply transition
+        const idx = i * 3;
+        if (isTransitioning) {
+          const t = transition.getT(engineTime, i, PARTICLE_COUNT);
+          const lp = transition.lerp(i, px, py, pz, t);
+          posArr[idx] = lp.x; posArr[idx+1] = lp.y; posArr[idx+2] = lp.z;
+        } else {
+          posArr[idx] = px; posArr[idx+1] = py; posArr[idx+2] = pz;
+        }
+
+        // Compute color (skip if custom code handles it)
+        if (!customFn) {
+          const c = colFn(i, PARTICLE_COUNT, engineTime, colorParams);
+          _color.setHSL(c.h, c.s, c.l);
+          colArr[idx] = _color.r; colArr[idx+1] = _color.g; colArr[idx+2] = _color.b;
+        }
+      }
+
+      posAttr.needsUpdate = true;
+      colAttr.needsUpdate = true;
+
+      controls.update();
+      composer.render();
+    }
+
+    // ═══════════════════════════════════════════
+    //  RESIZE & START
+    // ═══════════════════════════════════════════
+    window.addEventListener('resize', () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      composer.setSize(w, h);
+    });
+
+    connectWS();
+    animate();
+  </script>
+</body>
+</html>

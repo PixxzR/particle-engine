@@ -1,0 +1,21 @@
+{
+  "name": "Demo Show",
+  "description": "A demo sequence showing off all formations",
+  "steps": [
+    { "command": { "type": "color", "scheme": "rainbow" }, "delay": 0 },
+    { "command": { "type": "formation", "name": "sphere", "params": { "radius": 40 }, "transition": 2 }, "delay": 4 },
+    { "command": { "type": "color", "scheme": "ice" }, "delay": 1 },
+    { "command": { "type": "formation", "name": "galaxy", "params": { "arms": 4, "spread": 0.6 }, "transition": 3 }, "delay": 5 },
+    { "command": { "type": "color", "scheme": "fire" }, "delay": 1 },
+    { "command": { "type": "formation", "name": "tornado", "params": { "height": 80, "spin": 3 }, "transition": 2.5 }, "delay": 5 },
+    { "command": { "type": "color", "scheme": "neon" }, "delay": 1 },
+    { "command": { "type": "formation", "name": "helix", "params": { "turns": 8, "radius": 25 }, "transition": 2 }, "delay": 5 },
+    { "command": { "type": "color", "scheme": "sunset" }, "delay": 1 },
+    { "command": { "type": "formation", "name": "heart", "params": { "scale": 2.5 }, "transition": 3 }, "delay": 5 },
+    { "command": { "type": "effect", "name": "bloom", "params": { "strength": 2.0 } }, "delay": 2 },
+    { "command": { "type": "formation", "name": "torus", "params": { "majorRadius": 35 }, "transition": 2 }, "delay": 5 },
+    { "command": { "type": "color", "scheme": "matrix" }, "delay": 1 },
+    { "command": { "type": "formation", "name": "wave", "params": { "amplitude": 20, "frequency": 0.12 }, "transition": 2 }, "delay": 5 },
+    { "command": { "type": "reset" }, "delay": 0 }
+  ]
+}
