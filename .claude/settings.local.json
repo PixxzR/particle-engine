@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh repo:*)",
+      "Bash(curl:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm install:*)",
+      "Bash(pkill -f \"node server.js\")",
+      "Bash(npm start:*)",
+      "WebFetch(domain:flyinclub.fr)",
+      "Bash(npm run:*)",
+      "Read(//home/iyme3300/amana/AmanaWebAgency/**)",
+      "Read(//home/iyme3300/amana/**)",
+      "Bash(echo \"PID=$!\" sleep 4 cat /tmp/astro-dev.log)",
+      "Bash(echo \"PID=$!\")",
+      "Read(//tmp/**)",
+      "Bash(ps -p 127131 -o cmd=)",
+      "mcp__playwright__browser_tabs",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_evaluate",
+      "Bash(google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug-profile)"
+    ]
+  }
+}

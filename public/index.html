@@ -31,6 +31,7 @@
   </script>
 
   <script type="module">
+    import Primitives from './primitives.js';
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -235,6 +236,20 @@
         }
         return { x: sx+(tx-sx)*t, y: sy+(ty-sy)*t, z: sz+(tz-sz)*t };
       }
+      // PERF: zero-allocation version — writes directly to buffer
+      lerpToBuffer(i, tx, ty, tz, t, out, idx) {
+        const si = i * 3;
+        const sx = this.source[si], sy = this.source[si+1], sz = this.source[si+2];
+        if (this.mode === 'chaos' && t > 0 && t < 1) {
+          const ct = t < 0.5 ? t * 2 : (t - 0.5) * 2;
+          const cs = 60;
+          const cx = Math.sin(i*127.1+311.7)*cs, cy = Math.sin(i*269.5+183.3)*cs, cz = Math.sin(i*419.2+371.9)*cs;
+          if (t < 0.5) { out[idx]=sx+(cx-sx)*ct; out[idx+1]=sy+(cy-sy)*ct; out[idx+2]=sz+(cz-sz)*ct; }
+          else { out[idx]=cx+(tx-cx)*ct; out[idx+1]=cy+(ty-cy)*ct; out[idx+2]=cz+(tz-cz)*ct; }
+          return;
+        }
+        out[idx]=sx+(tx-sx)*t; out[idx+1]=sy+(ty-sy)*t; out[idx+2]=sz+(tz-sz)*t;
+      }
     }
 
     // ═══════════════════════════════════════════
@@ -367,10 +382,15 @@
               bloomPass.radius = b.radius ?? 0.8;
               bloomPass.threshold = b.threshold ?? 0.1;
             }
+            if (msg.state.customCode) {
+              applyCustomCode(msg.state.customCode);
+            }
           }
           break;
 
         case 'formation':
+          customFn = null; customCode = null;
+          pointsData = null; pointsColors = null;
           setFormation(msg.name, msg.params || {}, msg.transition || 2, msg.easing, msg.transitionMode);
           infoEl.textContent = `Formation: ${msg.name}`;
           break;
@@ -503,7 +523,7 @@
 
     function applyCustomCode(code) {
       try {
-        customFn = new Function('i','count','time','target','color','THREE', code);
+        customFn = new Function('i','count','time','target','color','THREE','Primitives', code);
         customCode = code;
         const posAttr = geometry.getAttribute('position');
         transition.start(posAttr.array, PARTICLE_COUNT, 2, 'easeInOut', 'direct');
@@ -570,7 +590,7 @@
         if (customFn) {
           _target.set(0, 0, 0);
           _color.setHSL(0, 0, 0);
-          customFn(i, PARTICLE_COUNT, engineTime, _target, _color, THREE);
+          customFn(i, PARTICLE_COUNT, engineTime, _target, _color, THREE, Primitives);
           px = _target.x; py = _target.y; pz = _target.z;
           const idx = i * 3;
           colArr[idx] = _color.r; colArr[idx+1] = _color.g; colArr[idx+2] = _color.b;
@@ -589,8 +609,7 @@
         const idx = i * 3;
         if (isTransitioning) {
           const t = transition.getT(engineTime, i, PARTICLE_COUNT);
-          const lp = transition.lerp(i, px, py, pz, t);
-          posArr[idx] = lp.x; posArr[idx+1] = lp.y; posArr[idx+2] = lp.z;
+          transition.lerpToBuffer(i, px, py, pz, t, posArr, idx);
         } else {
           posArr[idx] = px; posArr[idx+1] = py; posArr[idx+2] = pz;
         }
@@ -609,8 +628,10 @@
         }
       }
 
-      posAttr.needsUpdate = true;
-      colAttr.needsUpdate = true;
+      // PERF: only upload buffers that changed
+      const isStatic = !customFn && currentFormation === 'points' && !isTransitioning;
+      posAttr.needsUpdate = !isStatic;
+      colAttr.needsUpdate = !isStatic || !pointsColors;
 
       controls.update();
       composer.render();
@@ -629,6 +650,9 @@
 
     connectWS();
     animate();
+
+    // Control panel (lazy-loaded)
+    import('./panel.js').then(m => m.createPanel(() => ws)).catch(() => {});
   </script>
 </body>
 </html>

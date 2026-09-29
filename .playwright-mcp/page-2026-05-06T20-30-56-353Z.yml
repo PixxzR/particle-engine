@@ -1,0 +1,609 @@
+- generic [active] [ref=e1]:
+  - link "Aller au contenu principal" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation [ref=e3]:
+    - link "Amana Web Agency -- Accueil" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e5]: Amana Web Agency
+    - button "Menu" [ref=e6] [cursor=pointer]
+  - dialog "Menu de navigation":
+    - list:
+      - listitem:
+        - link "Services":
+          - /url: /services/
+      - listitem:
+        - link "Réalisations":
+          - /url: /realisations/
+      - listitem:
+        - link "Blog":
+          - /url: /blog/
+      - listitem:
+        - link "À propos":
+          - /url: /a-propos/
+      - listitem:
+        - link "Contact":
+          - /url: /contact/
+    - link "Démarrer un projet":
+      - /url: /contact/
+      - text: Démarrer un projet
+      - img
+    - generic:
+      - link "Espace client":
+        - /url: /app/login/
+        - img
+        - generic: Espace client
+      - link "Carte de visite":
+        - /url: /carte/
+        - img
+        - generic: Carte de visite
+    - generic:
+      - link "Switch to English":
+        - /url: /en/
+        - img
+        - text: English
+      - generic:
+        - generic:
+          - img
+        - button "Changer le thème"
+        - generic:
+          - img
+  - main [ref=e10]:
+    - generic [ref=e11]:
+      - img
+      - generic [ref=e12]:
+        - generic [ref=e13]: Réactifs | Bug fix le jour même
+        - heading "Agence web, logiciel, mobile & IA à Paris." [level=1] [ref=e15]:
+          - generic [ref=e16]: Agence
+          - generic [ref=e18]: web,
+          - generic [ref=e20]: logiciel,
+          - generic [ref=e21]:
+            - generic [ref=e22]: mobile
+            - generic [ref=e24]: "&"
+            - generic [ref=e26]: IA
+            - generic [ref=e28]: à
+            - generic [ref=e30]: Paris.
+        - paragraph [ref=e31]: "On conçoit, développe, déploie et fait évoluer des projets web, logiciels, mobiles et IA avec une logique simple: livrer quelque chose d’utile, propre et exploitable en conditions réelles."
+        - generic [ref=e32]:
+          - link "Démarrer un projet" [ref=e33] [cursor=pointer]:
+            - /url: /contact/
+            - text: Démarrer un projet
+            - img [ref=e34]
+          - link "Découvrir nos services" [ref=e36] [cursor=pointer]:
+            - /url: /services/
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e39]: OC
+            - generic [ref=e40]: HZ
+            - generic [ref=e41]: RN
+            - generic [ref=e42]: +
+          - generic [ref=e43]:
+            - strong [ref=e44]: Projets réels
+            - text: et exécution assumée
+    - generic [ref=e45]:
+      - generic [ref=e46]: Notre signature
+      - paragraph: Propulsé par l'innovation
+    - generic [ref=e49]:
+      - generic [ref=e50]: Nos réalisations
+      - generic [ref=e51]:
+        - generic [ref=e52]: OpenClone
+        - generic [ref=e53]: RadioDuNet
+        - generic [ref=e54]: HZO Films
+        - generic [ref=e55]: FlyinFestival
+        - generic [ref=e56]: Click Event
+    - generic [ref=e57]:
+      - generic [ref=e58]:
+        - generic [ref=e59]: Nos expertises
+        - heading "Six pôles d'expertise, une seule équipe" [level=2] [ref=e60]:
+          - text: Six pôles d'expertise,
+          - text: une seule équipe
+        - paragraph [ref=e61]: "Notre équipe couvre l'intégralité de la chaîne tech. Pas de sous-traitance, pas de friction : vous parlez à celles et ceux qui codent."
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - img [ref=e65]
+          - heading "Développement Web" [level=3] [ref=e67]
+          - paragraph [ref=e68]: Sites vitrine, e-commerce et apps web sur-mesure. Temps de chargement < 1s, score Lighthouse 95+.
+          - link "En savoir plus" [ref=e69] [cursor=pointer]:
+            - /url: /services/developpement-web/
+            - text: En savoir plus
+            - img [ref=e70]
+        - generic [ref=e72]:
+          - img [ref=e74]
+          - heading "Applications Mobiles" [level=3] [ref=e76]
+          - paragraph [ref=e77]: Apps iOS & Android natives ou cross-platform. Design soigné, performances optimales, publication stores incluse.
+          - link "En savoir plus" [ref=e78] [cursor=pointer]:
+            - /url: /services/application-mobile/
+            - text: En savoir plus
+            - img [ref=e79]
+        - generic [ref=e81]:
+          - img [ref=e83]
+          - heading "Développement Logiciel" [level=3] [ref=e86]
+          - paragraph [ref=e87]: Logiciels métier, SaaS et outils internes. Automatisation de vos processus, gain de productivité immédiat.
+          - link "En savoir plus" [ref=e88] [cursor=pointer]:
+            - /url: /services/developpement-logiciel/
+            - text: En savoir plus
+            - img [ref=e89]
+        - generic [ref=e91]:
+          - img [ref=e93]
+          - heading "Intégration IA" [level=3] [ref=e95]
+          - paragraph [ref=e96]: Chatbots, automatisation intelligente, agents et IA générative intégrés à vos workflows existants.
+          - link "En savoir plus" [ref=e97] [cursor=pointer]:
+            - /url: /services/integration-ia/
+            - text: En savoir plus
+            - img [ref=e98]
+        - generic [ref=e100]:
+          - img [ref=e102]
+          - heading "Optimisation Workflow" [level=3] [ref=e107]
+          - paragraph [ref=e108]: Automatisation de processus, intégration d'outils, pipelines CI/CD. Moins de tâches manuelles, plus de vélocité.
+          - link "En savoir plus" [ref=e109] [cursor=pointer]:
+            - /url: /services/optimisation-workflow/
+            - text: En savoir plus
+            - img [ref=e110]
+        - generic [ref=e112]:
+          - img [ref=e114]
+          - heading "Conseil & Stratégie IT" [level=3] [ref=e117]
+          - paragraph [ref=e118]: Audits techniques, architecture, roadmap techno et accompagnement digital. Décisions éclairées, zéro perte de temps.
+          - link "En savoir plus" [ref=e119] [cursor=pointer]:
+            - /url: /services/conseil-strategie-it/
+            - text: En savoir plus
+            - img [ref=e120]
+    - generic [ref=e123]:
+      - generic [ref=e124]:
+        - generic [ref=e125]:
+          - generic [ref=e126]:
+            - heading "Rapport de performance" [level=3] [ref=e127]
+            - paragraph [ref=e128]: Résultats de vos projets en temps réel
+          - generic [ref=e129]:
+            - generic [ref=e130]:
+              - generic [ref=e131]: Design
+              - generic [ref=e134]: 92%
+            - generic [ref=e135]:
+              - generic [ref=e136]: Vitesse
+              - generic [ref=e139]: 97%
+            - generic [ref=e140]:
+              - generic [ref=e141]: SEO
+              - generic [ref=e144]: 88%
+            - generic [ref=e145]:
+              - generic [ref=e146]: Accessib.
+              - generic [ref=e149]: 95%
+        - generic [ref=e150]:
+          - generic [ref=e151]:
+            - generic [ref=e153]: Délai respecté
+            - img [ref=e155]
+          - generic [ref=e157]:
+            - generic [ref=e159]: Budget maîtrisé
+            - img [ref=e161]
+          - generic [ref=e163]:
+            - generic [ref=e165]: Client satisfait
+            - generic [ref=e166]: 5/5
+      - generic [ref=e167]:
+        - generic [ref=e168]: Pourquoi Amana
+        - heading "On livre vite. Et on livre bien." [level=2] [ref=e169]:
+          - text: On livre vite.
+          - text: Et on livre bien.
+        - paragraph [ref=e170]: Bug signalé le matin, corrigé l'après-midi. Modifications en heures, pas en jours. Une équipe dédiée, un interlocuteur unique, et des résultats mesurables dès la première semaine.
+        - generic [ref=e171]:
+          - generic [ref=e172]:
+            - img [ref=e174]
+            - generic [ref=e177]:
+              - heading "Audit & Cadrage en 48h" [level=3] [ref=e178]
+              - paragraph [ref=e179]: On analyse votre existant et on définit les objectifs prioritaires. Pas de réunions inutiles, un plan d'action clair sous 48h.
+          - generic [ref=e180]:
+            - img [ref=e182]
+            - generic [ref=e186]:
+              - heading "Développement itératif" [level=3] [ref=e187]
+              - paragraph [ref=e188]: Livraisons toutes les 48-72h, feedback continu. Vous voyez votre projet avancer en temps réel, pas dans 3 mois.
+          - generic [ref=e189]:
+            - img [ref=e191]
+            - generic [ref=e196]:
+              - heading "Lancement & suivi" [level=3] [ref=e197]
+              - paragraph [ref=e198]: Mise en production soignée et monitoring post-lancement inclus. Bug fix same day garanti pendant 3 mois.
+    - generic [ref=e199]:
+      - generic [ref=e200]:
+        - generic [ref=e201]: Notre process
+        - heading "Du brief à la prod, en un temps record" [level=2] [ref=e202]:
+          - text: Du brief à la prod,
+          - text: en un temps record
+        - paragraph [ref=e203]: Un workflow optimisé pour livrer vite et bien. Chaque étape a un objectif clair et un délai garanti.
+      - generic [ref=e204]:
+        - generic [ref=e206]:
+          - img [ref=e208]
+          - generic [ref=e210]:
+            - generic [ref=e211]: Jour 1
+            - heading "Échange & brief" [level=3] [ref=e212]
+            - paragraph [ref=e213]: On discute de vos besoins, objectifs et contraintes. Premier appel gratuit, sans engagement.
+        - generic [ref=e214]:
+          - img [ref=e216]
+          - generic [ref=e219]:
+            - generic [ref=e220]: Jour 2-3
+            - heading "Cadrage & specs" [level=3] [ref=e221]
+            - paragraph [ref=e222]: On analyse l'existant, définit le périmètre et livre un plan d'action chiffré avec les priorités.
+        - generic [ref=e223]:
+          - img [ref=e225]
+          - generic [ref=e229]:
+            - generic [ref=e230]: Jour 3-5
+            - heading "Design & architecture" [level=3] [ref=e231]
+            - paragraph [ref=e232]: Maquettes, choix techniques et architecture validée. Vous voyez à quoi ça va ressembler avant qu'on code.
+        - generic [ref=e233]:
+          - img [ref=e235]
+          - generic [ref=e238]:
+            - generic [ref=e239]: Semaine 1-3
+            - heading "Développement itératif" [level=3] [ref=e240]
+            - paragraph [ref=e241]: Sprints de 48-72h avec démos. Vous suivez l'avancement en temps réel et validez au fur et à mesure.
+        - generic [ref=e242]:
+          - img [ref=e244]
+          - generic [ref=e249]:
+            - generic [ref=e250]: Livraison
+            - heading "Déploiement & suivi" [level=3] [ref=e251]
+            - paragraph [ref=e252]: Mise en production, monitoring et 3 mois de support inclus. Bug fix same day garanti.
+    - generic [ref=e254]:
+      - img [ref=e256]
+      - generic [ref=e258]:
+        - heading "Souveraineté numérique" [level=3] [ref=e259]
+        - paragraph [ref=e260]: "On propose systématiquement des alternatives souveraines et open source : hébergement français/européen, solutions auto-hébergées, stack open source. Vos données restent les vôtres, conformité RGPD garantie. Parce que la performance ne devrait pas se faire au prix de votre indépendance."
+      - generic [ref=e261]:
+        - generic [ref=e262]: Hébergement FR/EU
+        - generic [ref=e263]: Open Source first
+        - generic [ref=e264]: RGPD natif
+        - generic [ref=e265]: Zéro dépendance GAFAM
+    - generic [ref=e267]:
+      - generic [ref=e268]:
+        - generic [ref=e269]: Qui sommes-nous
+        - heading "Une équipe impliquée, orientée exécution" [level=2] [ref=e270]:
+          - text: Une équipe impliquée,
+          - text: orientée exécution
+        - paragraph [ref=e271]: "Amana avance avec une structure volontairement resserrée: trois cofondateurs impliqués, une logique produit forte et une culture de livraison concrète sur le web, le logiciel, le mobile et l’IA."
+        - list [ref=e272]:
+          - listitem [ref=e273]:
+            - img [ref=e275]
+            - text: Web, logiciel, mobile et IA sous le même pilotage
+          - listitem [ref=e277]:
+            - img [ref=e279]
+            - text: Cycles courts, retours rapides, livraisons visibles
+          - listitem [ref=e281]:
+            - img [ref=e283]
+            - text: Bug fix same day quand le sujet est cadré et prioritaire
+          - listitem [ref=e285]:
+            - img [ref=e287]
+            - text: Déploiement, monitoring et support pensés dès le départ
+        - link "Découvrir l'équipe" [ref=e289] [cursor=pointer]:
+          - /url: /a-propos/
+          - text: Découvrir l'équipe
+          - img [ref=e290]
+      - generic [ref=e292]:
+        - generic [ref=e293]:
+          - img [ref=e295]
+          - generic [ref=e300]: "0"
+          - generic [ref=e301]: Cofondateurs impliqués
+        - generic [ref=e302]:
+          - img [ref=e304]
+          - generic [ref=e308]: Build
+          - generic [ref=e309]: Produits et plateformes
+        - generic [ref=e310]:
+          - img [ref=e312]
+          - generic [ref=e314]: <24h
+          - generic [ref=e315]: Délai moyen de réponse
+        - generic [ref=e316]:
+          - img [ref=e318]
+          - generic [ref=e323]: Run
+          - generic [ref=e324]: Support et suivi
+    - generic [ref=e325]:
+      - generic [ref=e326]:
+        - generic [ref=e327]: L'équipe fondatrice
+        - heading "Les visages derrière le code" [level=2] [ref=e328]:
+          - text: Les visages
+          - text: derrière le code
+        - paragraph [ref=e329]: "Trois fondateurs passionnés, une vision commune : rendre la tech accessible et performante."
+      - generic [ref=e330]:
+        - generic [ref=e331]:
+          - generic [ref=e333]: YM
+          - heading "Yannis Mesbah" [level=3] [ref=e334]
+          - paragraph [ref=e335]: Co-fondateur & Directeur Technique
+          - paragraph [ref=e336]: Full-stack passionne, architecte de solutions sur mesure. De l'idee au deploiement, il transforme vos ambitions en realite technique.
+          - link "GitHub Yannis" [ref=e338] [cursor=pointer]:
+            - /url: https://github.com/pixxzr
+            - text: GitHub
+        - generic [ref=e339]:
+          - generic [ref=e341]: IB
+          - heading "Imane Benazzouz" [level=3] [ref=e342]
+          - paragraph [ref=e343]: Co-fondatrice & Directrice Communication
+          - paragraph [ref=e344]: Stratege digitale et voix de l'agence. Elle porte l'image d'Amana et veille a ce que chaque message soit clair, percutant et aligne avec vos objectifs.
+          - link "Instagram Amana" [ref=e346] [cursor=pointer]:
+            - /url: https://instagram.com/amanawebagency
+            - text: Instagram
+        - generic [ref=e347]:
+          - generic [ref=e349]: YH
+          - heading "Yousra Hachmi" [level=3] [ref=e350]
+          - paragraph [ref=e351]: Co-fondatrice & Chef de Projet
+          - paragraph [ref=e352]: Garante de la qualite et du respect des delais. Elle pilote chaque projet avec rigueur et s'assure que chaque livraison depasse vos attentes.
+    - generic [ref=e353]:
+      - generic [ref=e354]:
+        - generic [ref=e355]: Nos réalisations
+        - heading "Des projets qui parlent d'eux-mêmes" [level=2] [ref=e356]:
+          - text: Des projets qui parlent
+          - text: d'eux-mêmes
+        - paragraph [ref=e357]: Quelques exemples de solutions que nous avons conçues et livrées.
+      - generic [ref=e358]:
+        - generic [ref=e359]:
+          - generic [ref=e360]:
+            - generic [ref=e365]: opencloneai.com
+            - generic [ref=e366]:
+              - generic [ref=e367]:
+                - generic [ref=e368]: OpenClone
+                - generic [ref=e369]: Your life, fully remembered
+              - generic [ref=e370]:
+                - generic [ref=e371]: Mémoire IA personnelle
+                - generic [ref=e372]: Open Source • Local-first • Zero-knowledge
+                - generic [ref=e373]: Déployer en 5 min →
+              - generic [ref=e374]:
+                - generic [ref=e375]:
+                  - img [ref=e377]
+                  - generic [ref=e380]: Audio
+                - generic [ref=e381]:
+                  - img [ref=e383]
+                  - generic [ref=e385]: Screen
+                - generic [ref=e386]:
+                  - img [ref=e388]
+                  - generic [ref=e391]: Browser
+          - generic [ref=e392]:
+            - heading "OpenClone" [level=3] [ref=e393]
+            - paragraph [ref=e394]: Produit Amana, preuve d'expertise IA et projet R&D open source à la fois. OpenClone capture audio, écran et navigation dans un vault Obsidian local-first, interrogeable via plusieurs fournisseurs IA, avec une architecture pensée pour la confidentialité.
+            - generic [ref=e395]:
+              - generic [ref=e396]:
+                - generic [ref=e397]: FastAPI
+                - generic [ref=e398]: Flutter
+                - generic [ref=e399]: Docker
+                - generic [ref=e400]: BYOK
+              - link "Voir le site" [ref=e401] [cursor=pointer]:
+                - /url: https://opencloneai.com
+                - text: Voir le site
+                - img [ref=e402]
+        - generic [ref=e404]:
+          - generic [ref=e405]:
+            - generic [ref=e410]: hzofilms.fr
+            - generic [ref=e411]:
+              - generic [ref=e412]:
+                - generic [ref=e413]: HZOFilms
+                - generic [ref=e414]:
+                  - generic [ref=e415]: Projets
+                  - generic [ref=e416]: Studio
+                  - generic [ref=e417]: Contact
+              - generic [ref=e418]:
+                - generic [ref=e419]: Behind the Stage
+                - generic [ref=e420]: Documentaire • Flyin' Festival • 2023
+                - generic [ref=e421]: Voir le projet →
+              - generic [ref=e422]:
+                - img [ref=e424]
+                - img [ref=e428]
+                - img [ref=e431]
+          - generic [ref=e433]:
+            - heading "HZO Films" [level=3] [ref=e434]
+            - paragraph [ref=e435]: Site vitrine conçu et mis en ligne en 24h pour un studio de production audiovisuelle. Positionnement clarifié, design cinématographique, SEO propre et support direct pour mieux présenter l'offre du studio et ses projets documentaires.
+            - generic [ref=e436]:
+              - generic [ref=e437]:
+                - generic [ref=e438]: SvelteKit
+                - generic [ref=e439]: TypeScript
+                - generic [ref=e440]: CSS
+                - generic [ref=e441]: SEO
+              - link "Voir le site" [ref=e442] [cursor=pointer]:
+                - /url: https://hzofilms.fr
+                - text: Voir le site
+                - img [ref=e443]
+        - generic [ref=e445]:
+          - generic [ref=e446]:
+            - generic [ref=e451]: flyinclub.fr
+            - generic [ref=e452]:
+              - generic [ref=e453]:
+                - generic [ref=e454]: FlyinClub
+                - generic [ref=e455]:
+                  - generic [ref=e456]: Artistes
+                  - generic [ref=e457]: FAQ
+                  - generic [ref=e458]: Contact
+              - generic [ref=e459]:
+                - generic [ref=e460]: FlyinClub Festival 2023
+                - generic [ref=e461]: 5-6 Août • Aérodrome de Royan
+                - generic [ref=e462]: Billetterie →
+              - generic [ref=e463]:
+                - img [ref=e465]
+                - img [ref=e470]
+                - img [ref=e474]
+          - generic [ref=e477]:
+            - heading "FlyinFestival" [level=3] [ref=e478]
+            - paragraph [ref=e479]: "Écosystème digital pour un festival de musique : site public, CMS admin, API, monitoring et intégrations autour de la billetterie, de l'information festival et du service client. Le mobile existe aussi dans le périmètre, mais la preuve la plus forte reste aujourd'hui l'écosystème web complet."
+            - generic [ref=e480]:
+              - generic [ref=e481]:
+                - generic [ref=e482]: SvelteKit
+                - generic [ref=e483]: Node.js
+                - generic [ref=e484]: PostgreSQL
+                - generic [ref=e485]: CI/CD
+              - link "Voir le site" [ref=e486] [cursor=pointer]:
+                - /url: https://flyinclub.fr
+                - text: Voir le site
+                - img [ref=e487]
+        - generic [ref=e489]:
+          - generic [ref=e490]:
+            - generic [ref=e495]: radiosdunet.com
+            - generic [ref=e496]:
+              - generic [ref=e497]:
+                - generic [ref=e498]: Les RadiosDuNet
+                - generic [ref=e501]: On Air
+              - generic [ref=e503]:
+                - img [ref=e505]
+                - generic [ref=e507]:
+                  - generic [ref=e508]: Stream en direct
+                  - generic [ref=e509]: Votre radio, partout
+              - generic [ref=e512]:
+                - generic [ref=e513]:
+                  - img [ref=e515]
+                  - generic [ref=e518]: Web
+                - generic [ref=e519]:
+                  - img [ref=e521]
+                  - generic [ref=e523]: Mobile
+                - generic [ref=e524]:
+                  - img [ref=e526]
+                  - generic [ref=e530]: Alexa
+          - generic [ref=e531]:
+            - heading "Les Radios Du Net" [level=3] [ref=e532]
+            - paragraph [ref=e533]: "Plateforme radio multi-support construite autour d'un même écosystème : site web, application mobile, skill Alexa et analytics d'audience. Une bonne preuve de polyvalence sur les produits qui doivent vivre sur plusieurs interfaces à la fois."
+            - generic [ref=e534]:
+              - generic [ref=e535]:
+                - generic [ref=e536]: SvelteKit
+                - generic [ref=e537]: Flutter
+                - generic [ref=e538]: AWS Lambda
+                - generic [ref=e539]: MongoDB
+              - link "Voir le site" [ref=e540] [cursor=pointer]:
+                - /url: https://radiosdunet.com
+                - text: Voir le site
+                - img [ref=e541]
+      - link "Voir toutes nos réalisations" [ref=e544] [cursor=pointer]:
+        - /url: /realisations/
+        - text: Voir toutes nos réalisations
+        - img [ref=e545]
+    - generic [ref=e547]:
+      - generic [ref=e548]:
+        - generic [ref=e549]: Témoignages
+        - heading "Ce que disent nos clients" [level=2] [ref=e550]
+        - paragraph [ref=e551]: Ils nous ont fait confiance. Voici leur retour d'expérience.
+      - generic [ref=e552]:
+        - generic [ref=e553]:
+          - text: “
+          - generic [ref=e554]:
+            - img [ref=e555]
+            - img [ref=e557]
+            - img [ref=e559]
+            - img [ref=e561]
+            - img [ref=e563]
+          - paragraph [ref=e565]: "\"Amana a complètement transformé notre présence en ligne. L'équipe est réactive, rigoureuse et vraiment à l'écoute. Un vrai partenaire digital.\""
+          - generic [ref=e566]:
+            - generic [ref=e567]: AH
+            - generic [ref=e568]:
+              - generic [ref=e569]: Axel Hannezo
+              - generic [ref=e570]: Fondateur, HZO Films
+        - generic [ref=e571]:
+          - text: “
+          - generic [ref=e572]:
+            - img [ref=e573]
+            - img [ref=e575]
+            - img [ref=e577]
+            - img [ref=e579]
+            - img [ref=e581]
+          - paragraph [ref=e583]: "\"Délais respectés, budget maîtrisé, qualité au rendez-vous. L'équipe a su comprendre nos contraintes métier et y répondre parfaitement.\""
+          - generic [ref=e584]:
+            - generic [ref=e585]: FC
+            - generic [ref=e586]:
+              - generic [ref=e587]: FlyinClub
+              - generic [ref=e588]: Festival, Royan
+        - generic [ref=e589]:
+          - text: “
+          - generic [ref=e590]:
+            - img [ref=e591]
+            - img [ref=e593]
+            - img [ref=e595]
+            - img [ref=e597]
+            - img [ref=e599]
+          - paragraph [ref=e601]: "\"Notre plateforme radio tourne sur 3 supports différents grâce à Amana. Un vrai travail de pro, de la conception à la mise en production.\""
+          - generic [ref=e602]:
+            - generic [ref=e603]: RN
+            - generic [ref=e604]:
+              - generic [ref=e605]: Les Radios Du Net
+              - generic [ref=e606]: Plateforme radio
+    - generic [ref=e607]:
+      - generic [ref=e608]:
+        - generic [ref=e609]: FAQ
+        - heading "Questions fréquentes" [level=2] [ref=e610]
+      - generic [ref=e611]:
+        - group [ref=e612] [cursor=pointer]:
+          - generic "Quels types de projets réalisez-vous ? +" [ref=e613]
+        - group [ref=e614] [cursor=pointer]:
+          - generic "En combien de temps livrez-vous un projet ? +" [ref=e615]
+        - group [ref=e616] [cursor=pointer]:
+          - generic "Proposez-vous de l'hébergement souverain en France ? +" [ref=e617]
+        - group [ref=e618] [cursor=pointer]:
+          - generic "Comment fonctionne le support après la mise en ligne ? +" [ref=e619]
+    - generic [ref=e621]:
+      - heading "Prêts à lancer votre projet ?" [level=2] [ref=e622]
+      - paragraph [ref=e623]: Premier échange offert, sans engagement. On vous répond sous 24h.
+      - generic [ref=e624]:
+        - link "Prendre contact" [ref=e625] [cursor=pointer]:
+          - /url: /contact/
+          - text: Prendre contact
+          - img [ref=e626]
+        - link "Nous appeler" [ref=e628] [cursor=pointer]:
+          - /url: tel:+33667650312
+          - img [ref=e629]
+          - text: Nous appeler
+  - contentinfo [ref=e631]:
+    - generic [ref=e632]:
+      - generic [ref=e633]:
+        - link "Amana Web Agency" [ref=e634] [cursor=pointer]:
+          - /url: /
+          - img "Amana Web Agency" [ref=e635]
+        - paragraph [ref=e636]:
+          - text: Solutions IT & digitales sur mesure.
+          - text: Une équipe à la demande, du brief à la prod.
+        - generic [ref=e639]:
+          - link "Amana sur github" [ref=e640] [cursor=pointer]:
+            - /url: https://github.com/amana-agency
+            - generic [ref=e641]: github
+          - link "Amana sur tiktok" [ref=e642] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@amanawebagency
+            - generic [ref=e643]: tiktok
+          - link "Amana sur instagram" [ref=e644] [cursor=pointer]:
+            - /url: https://instagram.com/amanawebagency
+            - generic [ref=e645]: instagram
+      - generic [ref=e646]:
+        - heading "Services" [level=3] [ref=e647]
+        - list [ref=e648]:
+          - listitem [ref=e649]:
+            - link "Développement Web" [ref=e650] [cursor=pointer]:
+              - /url: /services/developpement-web/
+          - listitem [ref=e651]:
+            - link "Applications Mobiles" [ref=e652] [cursor=pointer]:
+              - /url: /services/application-mobile/
+          - listitem [ref=e653]:
+            - link "Intégration IA" [ref=e654] [cursor=pointer]:
+              - /url: /services/integration-ia/
+          - listitem [ref=e655]:
+            - link "Conseil IT" [ref=e656] [cursor=pointer]:
+              - /url: /services/conseil-strategie-it/
+      - generic [ref=e657]:
+        - heading "Agence" [level=3] [ref=e658]
+        - list [ref=e659]:
+          - listitem [ref=e660]:
+            - link "À propos" [ref=e661] [cursor=pointer]:
+              - /url: /a-propos/
+          - listitem [ref=e662]:
+            - link "Réalisations" [ref=e663] [cursor=pointer]:
+              - /url: /realisations/
+          - listitem [ref=e664]:
+            - link "Blog" [ref=e665] [cursor=pointer]:
+              - /url: /blog/
+          - listitem [ref=e666]:
+            - link "Contact" [ref=e667] [cursor=pointer]:
+              - /url: /contact/
+          - listitem [ref=e668]:
+            - link "Nous rejoindre" [ref=e669] [cursor=pointer]:
+              - /url: /recrutement/
+          - listitem [ref=e670]:
+            - link "Carte de visite" [ref=e671] [cursor=pointer]:
+              - /url: /carte/
+          - listitem [ref=e672]:
+            - link "Espace client" [ref=e673] [cursor=pointer]:
+              - /url: /app/login/
+      - generic [ref=e674]:
+        - heading "Contact" [level=3] [ref=e675]
+        - list [ref=e676]:
+          - listitem [ref=e677]:
+            - link "amanawebagency@gmail.com" [ref=e678] [cursor=pointer]:
+              - /url: mailto:amanawebagency@gmail.com
+          - listitem [ref=e679]:
+            - link "06 67 65 03 12" [ref=e680] [cursor=pointer]:
+              - /url: tel:+33667650312
+    - generic [ref=e681]:
+      - generic [ref=e682]: © 2026 Amana Web Agency. Tous droits réservés.
+      - generic [ref=e683]:
+        - link "Mentions légales" [ref=e684] [cursor=pointer]:
+          - /url: /mentions-legales/
+        - link "Confidentialité" [ref=e685] [cursor=pointer]:
+          - /url: /confidentialite/
+        - link "CGU" [ref=e686] [cursor=pointer]:
+          - /url: /cgu/
