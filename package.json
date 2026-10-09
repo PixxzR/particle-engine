@@ -8,6 +8,7 @@
     "cli": "node cli/controller.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.52.0",
     "commander": "^12.1.0",
     "express": "^4.21.0",
     "ws": "^8.18.0"
